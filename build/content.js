@@ -3,6 +3,12 @@ console.log('Content script loaded!');
 const currentURL = window.location.href;
 console.log('Current URL:', currentURL);
 
+// ================== CONSTANTS ==================
+
+let enableShortsRemoval = true;
+let enableShortsBtnRemoval = true;
+let enableShortsRedirect = true;
+
 // ================== FUNCTIONS ==================
 
 const handleYoutube = () => {
@@ -78,42 +84,43 @@ const handleYoutube = () => {
     }
   };
 
-  console.log('Waiting for elements to load...');
-
-  // check if user is on shorts page every 5 seconds -- works but a bit inefficient
-  // setInterval(() => {
-  //   if (handleYTShortsCheck()) {
-  //     console.log('Shorts page detected!');
-  //   } else {
-  //     console.log('Not on shorts page.');
-  //   }
-  // }, 5000);
-
   // Listening for YouTube's internal navigation event
-  window.addEventListener('yt-navigate-finish', onUrlChange);
+  if (enableShortsRedirect) {
+    window.addEventListener('yt-navigate-finish', onUrlChange);
+  }
 
   // observe changes to dynamically remove shorts navigation buttons
-  const observer = new MutationObserver(removeShortsNavigationBtns);
-  observer.observe(document.body, {
-    childList: true,
-    subtree: true,
-  });
+  if (enableShortsBtnRemoval) {
+    const observer = new MutationObserver(removeShortsNavigationBtns);
+    observer.observe(document.body, {
+      childList: true,
+      subtree: true,
+    });
+  }
 
   // remove shorts on load
   setTimeout(() => {
-    handleYTShortsCheck();
-    removeShortsOnFeed();
+    if (enableShortsRemoval) {
+      removeShortsOnFeed();
+    }
+    if (enableShortsBtnRemoval) {
+      removeShortsNavigationBtns();
+    }
   }, 1000);
 
   // just incase the page is not loaded yet
   setTimeout(() => {
-    handleYTShortsCheck();
-    removeShortsOnFeed();
+    if (enableShortsRemoval) {
+      removeShortsOnFeed();
+    }
+    if (enableShortsBtnRemoval) {
+      removeShortsNavigationBtns();
+    }
   }, 5000);
 };
 
 const handleDefault = () => {
-  console.log('Handling default...');
+  console.log('Handling default... (not implemented)');
 };
 
 // ================== MAIN ==================
