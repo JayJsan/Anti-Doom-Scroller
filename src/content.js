@@ -5,12 +5,13 @@ console.log('Current URL:', currentURL);
 
 // ================== CONSTANTS ==================
 
-let enableShortsRemoval = true;
+let enableShortsFeedRemoval = true;
 let enableShortsBtnRemoval = true;
 let enableShortsRedirect = true;
 
 // ================== FUNCTIONS ==================
-
+// == YOUTUBE ==
+// == YOUTUBE ==
 const handleYoutube = () => {
   console.log('Handling Youtube...');
   // initalise functions
@@ -100,7 +101,7 @@ const handleYoutube = () => {
 
   // remove shorts on load
   setTimeout(() => {
-    if (enableShortsRemoval) {
+    if (enableShortsFeedRemoval) {
       removeShortsOnFeed();
     }
     if (enableShortsBtnRemoval) {
@@ -110,13 +111,24 @@ const handleYoutube = () => {
 
   // just incase the page is not loaded yet
   setTimeout(() => {
-    if (enableShortsRemoval) {
+    if (enableShortsFeedRemoval) {
       removeShortsOnFeed();
     }
     if (enableShortsBtnRemoval) {
       removeShortsNavigationBtns();
     }
   }, 5000);
+};
+
+// == YOUTUBE SETTINGS ==
+// == YOUTUBE SETTINGS ==
+const handleYoutubeSettings = () => {
+  chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action == 'toggle_shorts_feed_removal') {
+      enableShortsFeedRemoval = message.value;
+      console.log('Shorts feed removal:', enableShortsFeedRemoval);
+    }
+  });
 };
 
 const handleDefault = () => {
@@ -128,6 +140,7 @@ const handleDefault = () => {
 // main entry point (weird but im just used to this)
 const main = () => {
   if (currentURL.toLowerCase().includes('youtube')) {
+    handleYoutubeSettings();
     handleYoutube();
   }
 };

@@ -24,6 +24,7 @@ export default defineConfig({
       input: {
         main: './index.html',
         content: './src/content.js',
+        background: './src/background.js',
       },
     },
   },

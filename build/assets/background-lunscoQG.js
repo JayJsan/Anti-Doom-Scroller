@@ -1,0 +1,1 @@
+chrome.runtime.onMessage.addListener((e,n,o)=>{e.action==="toggle_shorts_feed_removal"&&chrome.tabs.query({active:!0,currentWindow:!0},r=>{var s;(s=r[0])!=null&&s.id&&chrome.tabs.sendMessage(r[0].id,e)})});

@@ -1,35 +1,32 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+/*global chrome*/
+import './App.css';
+import SettingsSwitch from './components/SettingsSwitch/SettingsSwitch';
 
 function App() {
-  const [count, setCount] = useState(0)
-
+  const handleToggle = (value: boolean) => {
+    console.log(value);
+    sendMessageToContentScript('toggle_shorts_feed_removal', value);
+  };
   return (
     <>
+      <h1>Settings</h1>
       <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+        <SettingsSwitch
+          label={'Enable Shorts Feed Removal'}
+          onToggle={handleToggle}
+        />
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
     </>
-  )
+  );
 }
 
-export default App
+declare const chrome: any;
+
+const sendMessageToContentScript = (actionName: string, payload: boolean) => {
+  chrome.runtime.sendMessage({
+    action: actionName,
+    value: payload,
+  });
+};
+
+export default App;
